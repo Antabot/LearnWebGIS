@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>Test-1:Create a JavaScript starter app</title>
+	<style>
+		html, body, #viewDiv {
+			padding: 0;
+			margin: 0;
+			height: 100%;
+			width: 100%;
+		}
+	</style>
+
+	<link rel="stylesheet" href="https://js.arcgis.com/4.8/esri/css/main.css">
+	<script src="https://js.arcgis.com/4.8/"></script>
+	<script>
+		require([
+			"esri/Map",
+			"esri/views/MapView",
+			"esri/layers/FeatureLayer", 
+			"dojo/domReady!"
+			], function(Map, MapView, FeatureLayer) {
+
+				var map = new Map({
+					basemap:"topo-vector"
+				});
+
+				// 添加风格化的路口层
+				var Trailheads_Styled = new FeatureLayer({
+					url:"https://services3.arcgis.com/GVgbJbqm8hXASVYi/arcgis/rest/services/Trailheads_Styled/FeatureServer"
+				});
+
+				map.add(Trailheads_Styled);
+
+				// 添加小路层
+				var Trails = new FeatureLayer({
+					url:"https://services3.arcgis.com/GVgbJbqm8hXASVYi/arcgis/rest/services/Trails/FeatureServer", 
+					definitionExpression: "ELEV_GAIN < 250"
+				});
+
+				map.add(Trails);
+
+				// 添加空地层
+				var openSpaces = new FeatureLayer({
+					url:"https://services3.arcgis.com/GVgbJbqm8hXASVYi/arcgis/rest/services/Parks_and_Open_Space/FeatureServer"
+				});
+
+				map.add(openSpaces);
+
+				var view = new MapView({
+					container: "viewDiv", 
+					map:map, 
+					center: [-118.71511, 34.09042], 
+					zoom: 10
+				});
+			});
+	</script>
+</head>
+<body>
+	<div id="viewDiv"></div>
+</body>
+</html>

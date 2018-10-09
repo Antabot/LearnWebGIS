@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>Test-1:Create a JavaScript starter app</title>
+	<style>
+		html, body, #viewDiv {
+			padding: 0;
+			margin: 0;
+			height: 100%;
+			width: 100%;
+		}
+	</style>
+
+	<link rel="stylesheet" href="https://js.arcgis.com/4.8/esri/css/main.css">
+	<script src="https://js.arcgis.com/4.8/"></script>
+	<script>
+		require([
+			"esri/Map",
+			"esri/views/MapView",
+			"esri/widgets/BasemapToggle",
+			"esri/widgets/BasemapGallery",
+			"dojo/domReady!"
+			], function(Map, MapView, BasemapToggle, BasemapGallery) {
+				var map = new Map({
+					basemap:"topo-vector"
+				});
+
+				var view = new MapView({
+					container: "viewDiv",
+					map: map,
+					center: [-118.71511,34.09042],
+					zoom: 10
+				});
+
+				var basemapToggle = new BasemapToggle({
+					view: view,
+					secondMap: "satellite"
+				});
+
+				view.ui.add(basemapToggle, "bottom-right");
+			});
+	</script>
+</head>
+<body>
+	<div id="viewDiv"></div>
+</body>
+</html>
