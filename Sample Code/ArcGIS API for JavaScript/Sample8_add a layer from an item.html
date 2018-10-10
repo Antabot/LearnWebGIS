@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>从项目中添加图层</title>
+	<style>
+		html, body, #viewDiv {
+			padding: 0;
+			margin: 0;
+			height: 100%;
+			width: 100%;
+		}
+	</style>
+
+	<link rel="stylesheet" href="https://js.arcgis.com/4.8/esri/css/main.css">
+	<script src="https://js.arcgis.com/4.8/"></script>
+	<script>
+		require([
+			"esri/Map",
+			"esri/views/MapView",
+			"esri/layers/Layer",
+			// 可以控制图层顺序的依赖工具
+			"esri/core/promiseUtils",
+			"dojo/domReady!"
+			], function(Map, MapView, Layer, promiseUtils) {
+				
+				var map = new Map({
+					basemap:"topo-vector"
+				});
+
+				var view = new MapView({
+					container: "viewDiv",
+					map: map,
+					center: [-118.71511,34.09042],
+					zoom: 10
+				});
+
+				var trailheads = Layer.fromPortalItem({
+					portalItem:{
+						id: "2e4b3df6ba4b44969a3bc9827de746b3"
+					}
+				});
+				// 使用以下代码也可添加图层，但无法保证顺序
+				/*
+				 trailheads.then(function(layer){
+					map.add(layer);
+				});
+				*/
+
+				var trails = Layer.fromPortalItem({
+					portalItem:{
+						id: "6b8ca89d2bd2418f8b91b030f9832ab8"
+					}
+				});
+
+				var parks = Layer.fromPortalItem({
+					portalItem:{
+						id: "fbca9c87feb94ba5b00411b3a00809f3"
+					}
+				});
+
+				promiseUtils.eachAlways([trailheads, trails, parks])
+				.then(function(promises){
+					for(var i = 0; i < promises.length; i++){
+						map.add(promises[i].value,0);
+					}
+				});
+
+			});
+	</script>
+</head>
+<body>
+	<div id="viewDiv"></div>
+</body>
+</html>

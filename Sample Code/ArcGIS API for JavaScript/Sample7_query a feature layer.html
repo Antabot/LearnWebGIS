@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>查询要素图层</title>
+	<style>
+		html, body, #viewDiv {
+			padding: 0;
+			margin: 0;
+			height: 100%;
+			width: 100%;
+		}
+	</style>
+
+	<link rel="stylesheet" href="https://js.arcgis.com/4.8/esri/css/main.css">
+	<script src="https://js.arcgis.com/4.8/"></script>
+	<script>
+		require([
+			"esri/Map",
+			"esri/views/MapView",
+			"esri/tasks/support/Query",
+			"esri/tasks/QueryTask",
+			"esri/Graphic",
+			"dojo/domReady!"
+			], function(Map, MapView, Query, QueryTask, Graphic) {
+				
+				var map = new Map({
+					basemap:"topo-vector"
+				});
+
+				var view = new MapView({
+					container: "viewDiv",
+					map: map,
+					center: [-118.71511,34.09042],
+					zoom: 10
+				});
+
+				// 定义SQL表达式
+				var query = new Query();
+				query.where = "TRL_NAME like '%backbone%'"
+				query.outFields = ["*"];
+				query.returnGeometry = true;
+
+				// 定义查询任务
+				var queryTask = new QueryTask({
+					url: "https://services3.arcgis.com/GVgbJbqm8hXASVYi/arcgis/rest/services/Trails/FeatureServer/0"
+				});
+
+				// 执行查询
+				queryTask.execute(query)
+				.then(function(result){
+					// 在控制台打印要素信息
+					// console.log(result.features.length)
+					result.features.forEach(function(item){
+						var g = new Graphic({
+							geometry: item.geometry,
+							attributes: item.attributes,
+							symbol: {
+								type: "simple-line",
+								color: "black",
+								width: 1.2,
+								style: "short-dot"
+							},
+							popupTemplate: {
+								title: "{TRL_NAME}",
+								content: "{*}" // 所有字段
+							}
+						});
+						view.graphics.add(g);
+					});
+
+					view.goTO({
+						target: view.graphics
+					});
+				})
+				.otherwise(function(e){
+					console.log(e);
+				});
+			});
+	</script>
+</head>
+<body>
+	<div id="viewDiv"></div>
+</body>
+</html>

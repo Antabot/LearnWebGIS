@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
-	<title>选择底图</title>
+	<title>显示风格化的矢量底图</title>
 	<style>
 		html, body, #viewDiv {
 			padding: 0;
@@ -19,13 +19,31 @@
 		require([
 			"esri/Map",
 			"esri/views/MapView",
-			"esri/widgets/BasemapToggle",
-			"esri/widgets/BasemapGallery",
+			"esri/Basemap",
+			"esri/layers/VectorTileLayer",
+			"esri/layers/TileLayer",
 			"dojo/domReady!"
-			], function(Map, MapView, BasemapToggle, BasemapGallery) {
+			], function(Map, MapView, Basemap, VectorTileLayer, TileLayer) {
 				
+				var basemap = new Basemap({
+					baseLayers: [
+					// 加上地形阴影
+					new TileLayer({
+						portalItem: {
+							id: "1b243539f4514b6ba35e7d995890db1d" 
+          				}
+					}),
+					// 风格化的矢量瓦片底图
+					new VectorTileLayer({
+						portalItem: {
+							id: "d2ff12395aeb45998c1b154e25d680e5"
+						}
+					})
+					]
+				});
+
 				var map = new Map({
-					basemap:"topo-vector"
+					basemap: basemap
 				});
 
 				var view = new MapView({
@@ -34,13 +52,6 @@
 					center: [-118.71511,34.09042],
 					zoom: 10
 				});
-
-				var basemapToggle = new BasemapToggle({
-					view: view,
-					secondMap: "satellite"
-				});
-
-				view.ui.add(basemapToggle, "bottom-right");
 			});
 	</script>
 </head>
