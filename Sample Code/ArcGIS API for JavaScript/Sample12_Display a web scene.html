@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>显示来自网络的 3D 场景</title>
+	<style>
+		html, body, #viewDiv {
+			padding: 0;
+			margin: 0;
+			height: 100%;
+			width: 100%;
+		}
+	</style>
+
+	<link rel="stylesheet" href="https://js.arcgis.com/4.8/esri/css/main.css">
+	<script src="https://js.arcgis.com/4.8/"></script>
+	<script>
+		require([
+			"esri/WebScene",
+			"esri/views/SceneView",
+			"esri/widgets/Legend",
+			"esri/widgets/ScaleBar",
+			"dojo/domReady!"
+			], function(WebScene, SceneView, Legend, ScaleBar) {
+				
+				var webScene = new WebScene({
+					portalItem:{
+						id: "579f97b2f3b94d4a8e48a5f140a6639b"
+					}
+				});
+
+				var view = new SceneView({
+					container: "viewDiv",
+					map: webScene
+				});
+
+				var legend = new Legend({
+					view: view
+				});
+				view.ui.add(legend, "top-right");
+
+				var scaleBar = new ScaleBar({
+					view: view
+				});
+				view.ui.add(scaleBar, "bottom-left");
+
+			});
+	</script>
+</head>
+<body>
+	<div id="viewDiv"></div>
+</body>
+</html>

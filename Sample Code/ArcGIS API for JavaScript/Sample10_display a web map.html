@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>显示网络地图</title>
+	<style>
+		html, body, #viewDiv {
+			padding: 0;
+			margin: 0;
+			height: 100%;
+			width: 100%;
+		}
+	</style>
+
+	<link rel="stylesheet" href="https://js.arcgis.com/4.8/esri/css/main.css">
+	<script src="https://js.arcgis.com/4.8/"></script>
+	<script>
+		require([
+			"esri/WebMap",
+			"esri/views/MapView",
+			// 添加图例和比例尺
+			"esri/widgets/Legend",
+			"esri/widgets/ScaleBar",
+			"dojo/domReady!"
+			], function(WebMap, MapView, Legend, ScaleBar) {
+				
+				var webmap = new WebMap({
+					portalItem: {
+						id: "41281c51f9de45edaf1c8ed44bb10e30"
+					}
+				});
+
+				var view = new MapView({
+					container: "viewDiv",
+					map: webmap
+				});
+
+				var legend = new Legend({
+					view: view
+				});
+				view.ui.add(legend, "top-right");
+
+				var scaleBar = ScaleBar({
+					view: view
+				});
+				view.ui.add(scaleBar,"bottom-left");
+			});
+	</script>
+</head>
+<body>
+	<div id="viewDiv"></div>
+</body>
+</html>

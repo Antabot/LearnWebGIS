@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>向 3D 场景添加图层</title>
+	<style>
+		html, body, #viewDiv {
+			padding: 0;
+			margin: 0;
+			height: 100%;
+			width: 100%;
+		}
+	</style>
+
+	<link rel="stylesheet" href="https://js.arcgis.com/4.9/esri/css/main.css">
+	<script src="https://js.arcgis.com/4.9/"></script>
+	<script>
+		require([
+			"esri/Map",
+			"esri/views/SceneView",
+			"esri/layers/FeatureLayer",
+			"dojo/domReady!"
+			], function(Map, SceneView, FeatureLayer) {
+				
+				var map = new Map({
+					basemap:"satellite"
+				});
+
+				var trailheads = new FeatureLayer({
+					url: "https://services3.arcgis.com/GVgbJbqm8hXASVYi/arcgis/rest/services/Trailheads/FeatureServer"
+				});
+
+				map.add(trailheads);
+
+				var trails = new FeatureLayer({
+					url: "https://services3.arcgis.com/GVgbJbqm8hXASVYi/arcgis/rest/services/Trails/FeatureServer",
+					// 选择要素
+					definitionExpression: "ELEV_GAIN < 250"
+				});
+
+				map.add(trails);
+
+				var parks = new FeatureLayer({
+					url: "https://services3.arcgis.com/GVgbJbqm8hXASVYi/arcgis/rest/services/Parks_and_Open_Space/FeatureServer"
+				});
+
+				map.add(parks);
+
+				var view = new SceneView({
+					container: "viewDiv",
+					map: map
+				});
+
+				view.when(function(){
+					view.goTo({
+						center: [-118.71511,34.09042],
+						zoom: 11,
+						tilt: 70
+					})
+				});
+			});
+	</script>
+</head>
+<body>
+	<div id="viewDiv"></div>
+</body>
+</html>
