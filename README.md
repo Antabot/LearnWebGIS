@@ -15,6 +15,8 @@ Learn how to build mapping apps with ArcGIS API for JavaScript.（WebGIS 入门�
 
 官方地址：[Get Started with the ArcGIS DevLabs](https://developers.arcgis.com/labs/?product=JavaScript&topic=any)
 
+不要懒惰，把下面的代码都敲一遍~
+
 #### 1.[创建初始应用](https://github.com/Antabot/LearnWebGIS/blob/master/Sample%20Code/ArcGIS%20API%20for%20JavaScript/Sample1_create%20a%20starter%20app.html)
 #### 2.[创建 3D 初始应用](https://github.com/Antabot/LearnWebGIS/blob/master/Sample%20Code/ArcGIS%20API%20for%20JavaScript/Sample2_create%20a%203D%20starter%20app.html)
 #### 3.[通过组件选择底图](https://github.com/Antabot/LearnWebGIS/blob/master/Sample%20Code/ArcGIS%20API%20for%20JavaScript/Sample3_select%20a%20base%20map.html)
@@ -24,9 +26,9 @@ Learn how to build mapping apps with ArcGIS API for JavaScript.（WebGIS 入门�
 #### 7.[查询要素图层](https://github.com/Antabot/LearnWebGIS/blob/master/Sample%20Code/ArcGIS%20API%20for%20JavaScript/Sample7_query%20a%20feature%20layer.html)
 #### 8.[从项目中添加图层](https://github.com/Antabot/LearnWebGIS/blob/master/Sample%20Code/ArcGIS%20API%20for%20JavaScript/Sample8_add%20a%20layer%20from%20an%20item.html)
 #### 9.[显示风格化的矢量底图](https://github.com/Antabot/LearnWebGIS/blob/master/Sample%20Code/ArcGIS%20API%20for%20JavaScript/Sample9_display%20a%20styled%20vector%20basemap.html)
-#### 10.[显示来自网络的地图]()
-#### 11.[向 3D 场景添加图层]()
-#### 12.[显示来自网络的 3D 场景]()
+#### 10.[显示来自网络的地图](https://github.com/Antabot/LearnWebGIS/blob/master/Sample%20Code/ArcGIS%20API%20for%20JavaScript/Sample10_display%20a%20web%20map.html)
+#### 11.[向 3D 场景添加图层](https://github.com/Antabot/LearnWebGIS/blob/master/Sample%20Code/ArcGIS%20API%20for%20JavaScript/Sample11_add%20layers%20to%20a%203D%20scene.html)
+#### 12.[显示来自网络的 3D 场景](https://github.com/Antabot/LearnWebGIS/blob/master/Sample%20Code/ArcGIS%20API%20for%20JavaScript/Sample12_Display%20a%20web%20scene.html)
 
 （持续更新中···）
 
