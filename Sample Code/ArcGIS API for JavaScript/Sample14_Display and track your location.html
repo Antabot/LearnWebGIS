@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>显示并追踪你的位置</title>
+	<style>
+		html, body, #viewDiv {
+			padding: 0;
+			margin: 0;
+			height: 100%;
+			width: 100%;
+		}
+	</style>
+
+	<link rel="stylesheet" href="https://js.arcgis.com/4.9/esri/css/main.css">
+	<script src="https://js.arcgis.com/4.9/"></script>
+	<script>
+		require([
+			"esri/Map",
+			"esri/views/MapView",
+			"esri/widgets/Locate",
+			"esri/widgets/Track",
+			"esri/Graphic",
+			"esri/widgets/Compass",
+			"dojo/domReady!"
+			], function(Map, MapView, Locate, Track, Graphic, Compass) {
+				
+				var map = new Map({
+					basemap:"streets-navigation-vector"
+				});
+
+				var view = new MapView({
+					container: "viewDiv",
+					map: map
+				});
+
+				var locate = new Locate({
+					view: view,
+					useHeadingEnabled: false,
+					// goToOverride: function(view, options) {
+					// 	options.target.scale = 1500;
+					// 	return view.goto(options.target);
+					// }
+				});
+
+				view.ui.add(locate, "top-left");
+
+				var track = new Track({
+					view: view,
+					graphic: new Graphic({
+						symbol: {
+							type: "simple-marker",
+							size: "9px",
+							color: "green",
+							outline: {
+								color: "#efefef",
+								width: "1.2px"
+							}
+						}
+					}),
+					useHeadingEnabled: false,
+					goToLocationEnabled:false,
+					goToOverride: function(view, options) {
+						options.target.scale = null;
+						return view.goTo(options);
+					}
+				});
+
+				view.ui.add(track, "top-left");
+
+				var compass = new Compass({
+					view: view
+				});
+
+				view.ui.add(compass, "top-left");
+
+			});
+	</script>
+</head>
+<body>
+	<div id="viewDiv"></div>
+</body>
+</html>

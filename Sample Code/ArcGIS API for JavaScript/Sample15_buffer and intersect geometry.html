@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>缓冲和相交</title>
+	<style>
+		html, body, #viewDiv {
+			padding: 0;
+			margin: 0;
+			height: 100%;
+			width: 100%;
+		}
+	</style>
+
+	<link rel="stylesheet" href="https://js.arcgis.com/4.9/esri/css/main.css">
+	<script src="https://js.arcgis.com/4.9/"></script>
+	<script>
+		require([
+			"esri/Map",
+			"esri/views/MapView",
+			"esri/geometry/Point",
+			"esri/Graphic",
+			"esri/geometry/geometryEngine",
+			"dojo/domReady!"
+			], function(Map, MapView, Point, Graphic, geometryEngine) {
+				
+				var map = new Map({
+					basemap:"topo-vector"
+				});
+
+				var view = new MapView({
+					container: "viewDiv",
+					map: map,
+					center: [-118.71511,34.09042],
+					zoom: 10
+				});
+
+				var malibuPoint;
+				var bufferGraphic;
+				var textGraphic;
+				var lineGraphic;
+				var nearestPointGraphic;
+
+				view.when(function(){
+					malibuPoint = new Point({
+						latitude: 34.03539,
+						longitude: -118.68634,
+						spatialReference: view.spatialReference
+					});
+				});
+
+				
+
+				view.on("pointer-move", function(event){
+					var point = view.toMap(event);
+					var buffer = geometryEngine.buffer(point, 10, "miles");
+					 buffer = geometryEngine.densify(buffer, 250, "meters");
+					var intersects = geometryEngine.intersects(malibuPoint, buffer);
+
+					view.graphics.remove(bufferGraphic);
+					bufferGraphic = new Graphic({
+						geometry:buffer,
+						symbol: {
+							type: "simple-fill",
+							color: "rgba(0,0,0,.15)",
+							outline: {
+								color: intersects ? "red" : "green",
+								width: 2
+							}
+						}
+					});
+					view.graphics.add(bufferGraphic);
+
+					view.graphics.remove(lineGraphic);
+					lineGraphic = new Graphic({
+						geometry: {
+							type: "polyline",
+							paths: [
+							[point.longitude, point.latitude],
+							[malibuPoint.longitude, malibuPoint.latitude]
+							]
+						},
+						symbol: {
+							type: "simple-line",
+							color: "#333",
+							width: 1
+						}
+					});
+					view.graphics.add(lineGraphic);
+
+					var distance = geometryEngine.distance(point, malibuPoint, "miles");
+
+					view.graphics.remove(textGraphic);
+					textGraphic = new Graphic({
+						geometry:point,
+						symbol: {
+							type: "text",
+							text: distance.toFixed(2) + "miles",
+							color: "black",
+							font: {
+								size: 12
+							}
+						}
+					});
+					view.graphics.add(textGraphic);
+
+      				var nearestPoint = geometryEngine.nearestVertex(buffer, malibuPoint);
+
+					view.graphics.remove(nearestPointGraphic);
+					nearestPointGraphic = new Graphic({
+					geometry: nearestPoint.coordinate,
+					symbol: {
+					  	type: "simple-marker",
+					  	color: "black",
+					  	size: 6,
+					  	outline: {
+					    color: "white",
+					    width: 1
+					  	}
+					}
+					});
+					view.graphics.add(nearestPointGraphic);
+				});
+
+				view.on("drag", function(){
+					event.stopPropagation();
+				});
+
+				view.on("pointer-leave", function(){
+					view.graphics.removeAll();
+				});
+			});
+	</script>
+</head>
+<body>
+	<div id="viewDiv"></div>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>显示点线面图形</title>
+	<style>
+		html, body, #viewDiv {
+			padding: 0;
+			margin: 0;
+			height: 100%;
+			width: 100%;
+		}
+	</style>
+
+	<link rel="stylesheet" href="https://js.arcgis.com/4.9/esri/css/main.css">
+	<script src="https://js.arcgis.com/4.9/"></script>
+	<script>
+		require([
+			"esri/Map",
+			"esri/views/MapView",
+			// 添加点图形依赖
+			"esri/Graphic",
+			"esri/geometry/Point",
+			"esri/symbols/SimpleMarkerSymbol",
+			// 添加线图形依赖
+			"esri/geometry/Polyline",
+			"esri/symbols/SimpleLineSymbol",
+			// 添加面图形依赖
+			"esri/geometry/Polygon",
+			"esri/symbols/SimpleFillSymbol",
+			"dojo/domReady!"
+			], function(Map, MapView, Graphic, Point, SimpleMarkerSymbol,
+				Polyline, SimpleLineSymbol, Polygon, SimpleFillSymbol) {
+				
+				var map = new Map({
+					basemap:"topo-vector"
+				});
+
+				var view = new MapView({
+					container: "viewDiv",
+					map: map,
+					// 修改地图中心
+					center: [-118.27928,34.13558],
+					zoom: 12
+				});
+
+				var point = new Point({
+					longitude: -118.29507,
+					latitude: 34.13501
+				});
+
+				var markerSymbol = new SimpleMarkerSymbol({
+					color: [226, 119, 40],
+					outline: {
+						color: [255, 255, 255],
+						width: 1
+					}
+				});
+
+				var pointGraphic = new Graphic({
+					geometry: point,
+					symbol: markerSymbol
+				});
+
+				view.graphics.add(pointGraphic);
+
+				var polyline = new Polyline({
+					paths: [
+					[-118.29026, 34.1816],
+					[-118.26451, 34.09664]
+					]
+				});
+
+				var lineSymbol = new SimpleLineSymbol({
+					color: [226, 119, 40],
+					width:4
+				});
+
+				var polylineGraphic = new Graphic({
+					geometry: polyline,
+					symbol: lineSymbol
+				});
+
+				view.graphics.add(polylineGraphic);
+
+				var polygon = new Polygon({
+					rings: [
+				      [-118.27653, 34.15121],
+				      [-118.2446, 34.15462],
+				      [-118.22915, 34.14439],
+				      [-118.23327, 34.12279],
+				      [-118.25318, 34.10972],
+				      [-118.26486, 34.11625],
+				      [-118.27653, 34.15121]					
+					]
+				});
+
+				var fillSymbol = new SimpleFillSymbol({
+					color: [227, 139, 79, 0.8],
+					outline: {
+						color: [255, 255, 255],
+						width: 1
+					}
+				});
+
+				var polygonGraphic = new Graphic({
+					geometry: polygon,
+					symbol: fillSymbol
+				});
+
+				view.graphics.add(polygonGraphic);
+			});
+	</script>
+</head>
+<body>
+	<div id="viewDiv"></div>
+</body>
+</html>
