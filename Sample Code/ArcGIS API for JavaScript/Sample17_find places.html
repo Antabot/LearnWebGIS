@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>寻找地点</title>
+	<style>
+		html, body, #viewDiv {
+			padding: 0;
+			margin: 0;
+			height: 100%;
+			width: 100%;
+		}
+	</style>
+
+	<link rel="stylesheet" href="https://js.arcgis.com/4.9/esri/css/main.css">
+	<script src="https://js.arcgis.com/4.9/"></script>
+	<script>
+		require([
+			"esri/Map",
+			"esri/views/MapView",
+			"esri/tasks/Locator",
+			"esri/Graphic",
+			"dojo/domReady!"
+			], function(Map, MapView, Locator, Graphic) {
+				
+				var map = new Map({
+					basemap:"topo-vector"
+				});
+
+				var view = new MapView({
+					container: "viewDiv",
+					map: map,
+					center: [-118.71511,34.09042],
+					zoom: 10
+				});
+
+				var places = ["Coffee shop", "Gas station", "Food", "Hotel", "Neighborhood", "Parks and Outdoors", "American Food, Chinese Food, Mexican Food"];
+
+				var select = document.createElement("select","");
+				places.forEach(function(p){
+					var option = document.createElement("option");
+					option.value = p;
+					option.innerHTML = p;
+					select.appendChild(option);
+				});
+
+				view.ui.add(select, "top-right");
+
+				var locator = new Locator({
+					url: "http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer"
+				});
+
+				function findPlaces(category, pt){
+					locator.addressToLocations({
+						location: pt,
+						categories: [category],
+						maxLocations: 25,
+						outFields: ["Place_addr", "PlaceName"]
+					}).then(function(results){
+						view.popup.close();
+						view.graphics.removeAll();
+						results.forEach(function(result){
+							view.graphics.add(
+								new Graphic({
+									attributes: result.attributes,
+									geometry: result.location,
+									symbol: {
+										type: "simple-marker",
+										color: "#000000",
+										size: "8px",
+										outline: {
+											color: "#ffffff",
+											width: "1.5px"
+										}
+									},
+									popupTemplate: {
+										title: "{PlaceName}",
+										content: "{Place_addr}"
+									}
+								}));
+						});
+					});
+				}
+
+				findPlaces(select.value, view.center);
+
+				select.addEventListener('change', function(event){
+					findPlaces(event.target.value, view.center);
+				});
+
+				view.on("click", function(event){
+					view.hitTest(event.screenPoint).then(function(response){
+						if(response.results.length < 2){
+							findPlaces(select.options[select.selectedIndex].text, event.mapPoint);
+						}
+					})
+				});
+			});
+	</script>
+</head>
+<body>
+	<div id="viewDiv"></div>
+</body>
+</html>

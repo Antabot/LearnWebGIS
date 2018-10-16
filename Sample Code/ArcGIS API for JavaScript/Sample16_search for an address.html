@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>寻找地址</title>
+	<style>
+		html, body, #viewDiv {
+			padding: 0;
+			margin: 0;
+			height: 100%;
+			width: 100%;
+		}
+	</style>
+
+	<link rel="stylesheet" href="https://js.arcgis.com/4.9/esri/css/main.css">
+	<script src="https://js.arcgis.com/4.9/"></script>
+	<script>
+		require([
+			"esri/Map",
+			"esri/views/MapView",
+			"esri/widgets/Search",
+			"esri/layers/FeatureLayer",
+			"dojo/domReady!"
+			], function(Map, MapView, Search, FeatureLayer) {
+				
+				var map = new Map({
+					basemap:"topo-vector"
+				});
+
+				var view = new MapView({
+					container: "viewDiv",
+					map: map,
+					center: [-118.71511,34.09042],
+					zoom: 10
+				});
+
+				var search = new Search({
+					view: view
+				});
+
+				view.ui.add(search, "top-right");
+
+				view.on("click", function(evt){
+					search.clear();
+					view.popup.clear();
+					if(search.activeSource){
+						var geocoder = search.activeSource.locator;
+						geocoder.locationToAddress(evt.mapPoint).then(
+							function(response){
+								var address = response.address;
+								showPopup(address, evt.mapPoint);
+							}, function(err){
+								showPopup("No address found.", evt.mapPoint);
+							});
+					}
+				});
+
+				function showPopup(address, pt){
+					view.popup.open({
+						title:  + Math.round(pt.longitude * 100000)/100000 + "," + Math.round(pt.latitude * 100000)/100000,
+						content: address,
+						location: pt
+					});
+				}
+
+				var trailsLayer = new FeatureLayer({
+					url: "https://services3.arcgis.com/GVgbJbqm8hXASVYi/arcgis/rest/services/Trailheads/FeatureServer/0"
+				});
+
+				map.add(trailsLayer);
+
+				search.sources.push({
+					featureLayer: trailsLayer,
+					searchFields: ["TRL_NAME"],
+					displayField: "TRL_NAME",
+					exactMatch: false,
+					outFields: ["TRL_NAME", "PARK_NAME"],
+					resultGraphicEnabled: true,
+					name: "Trailheads",
+					placeholder: "Santa"
+				});
+			});
+	</script>
+</head>
+<body>
+	<div id="viewDiv"></div>
+</body>
+</html>
