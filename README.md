@@ -1,6 +1,6 @@
 # 更新计划
 
-暂无
+8 月份开始更新。
 
 # Web GIS 攻略
 Learn how to build mapping apps with ArcGIS API for JavaScript.（WebGIS 入门实战攻略）
